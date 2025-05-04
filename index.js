@@ -10,7 +10,7 @@ app.post("/webhook", async (req, res) => {
   const { message, phone } = req.body;
 
   // Reenvía a tu n8n webhook (cámbialo por el tuyo)
-  await fetch("https://tuflujo.n8n.cloud/webhook/gpt", {
+  await fetch("https://n8n-production-d3b5.up.railway.app/webhook/gpt", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, phone }),
