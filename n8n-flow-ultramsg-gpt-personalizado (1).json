@@ -1,0 +1,96 @@
+{
+  "name": "WhatsApp GPT Agent (Custom)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "gpt",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "method": "POST",
+        "responseFormat": "json",
+        "jsonParameters": true,
+        "options": {},
+        "bodyContent": {
+          "model": "gpt-3.5-turbo",
+          "messages": [
+            {
+              "role": "system",
+              "content": "Eres un asistente de ventas de p\u00e1ginas web, responde de forma clara, c\u00e1lida y profesional."
+            },
+            {
+              "role": "user",
+              "content": "={{$json[\"message\"]}}"
+            }
+          ]
+        },
+        "headerParametersJson": {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        }
+      },
+      "id": "2",
+      "name": "GPT-3.5 Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.ultramsg.com/instance118110/messages/chat",
+        "method": "POST",
+        "responseFormat": "json",
+        "jsonParameters": true,
+        "options": {},
+        "bodyContent": {
+          "to": "={{$json[\"phone\"]}}",
+          "body": "={{$json[\"choices\"][0][\"message\"][\"content\"]}}"
+        },
+        "headerParametersJson": {
+          "Content-Type": "application/json",
+          "token": "3i5u99azlzltlc4k"
+        }
+      },
+      "id": "3",
+      "name": "Send WhatsApp Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        750,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          "2"
+        ]
+      ]
+    },
+    "GPT-3.5 Request": {
+      "main": [
+        [
+          "3"
+        ]
+      ]
+    }
+  }
+}
